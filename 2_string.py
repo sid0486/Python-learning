@@ -401,7 +401,7 @@ print("".join(result))
 freq = {} 
 for ch in text :
     freq[ch] = freq.get(ch,0)+1
-    # if freq[ch]>1:  for first repeatingt character 
+    # if freq[ch]>1:  for first repeating character 
     #     print(ch)
     #     break
 
@@ -615,6 +615,13 @@ print(result)
 
 
 
+freq = {} 
+for ch in text :
+    freq[ch] = freq.get(ch,0)+1
 
-
+seen = set()
+count = 0
+for ch in text :
+    if freq[ch] > 1 and ch not in seen :
+        
 

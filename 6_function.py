@@ -103,8 +103,37 @@ print(apply(lambda x: x*x, 5))
 
 
 
+x = 10
+
+def change():
+    global x
+    x = 20   # modify global
+
+change()
+print(x)   
+
+# CLOSURE :
+def outer ():
+    x  = 10 
+
+    def inner():
+        return x 
+    return inner
+
+f = outer()
+print(f())
 
 
+def power(n):
+    def inner(x):
+        return x ** n 
+    return inner
+
+square = power(2)
+cube = power(3)
+
+print(square(4))
+print(cube(5))
 
 
 
