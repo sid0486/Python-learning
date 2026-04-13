@@ -1,1 +1,2 @@
-def read_file
+file = open("data.txt","r")
+open(filename,mode)

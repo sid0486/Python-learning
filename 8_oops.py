@@ -97,9 +97,6 @@ class AdvanceHybrid(HybridCar,Battery,Engine):
     pass 
 
 
-
-
-
 my_car = Car("Toyota","Corolla")
 print(my_car.model)
 print(my_car.brand)
@@ -140,6 +137,143 @@ ah1.battery_info()
 ah1.engine_info()
 print(ah1.full_name())
 print(ah1.fuel_type())
+
+
+
+
+# STUDENT MANAGEMENT :
+
+class Student:
+    def __init__(self,Rollno,Name,Marks):
+        self.Rollno = Rollno
+        self.Name = Name
+        self.Marks = Marks
+
+    def show_details(self):
+        print(f"Rollno: {self.Rollno} , Name: {self.Name} , Marks:{self.Marks}")
+
+    def get_grades(self):
+        if self.Marks >= 90:
+            return "A"
+        elif self.Marks >= 75:
+            return "B"
+        else:
+            return "C"
+            
+            
+class StudentManager:
+    def __init__(self):
+        self.students = []
+
+    def add_student(self,student):
+        self.students.append(student)
+
+    def show_all(self):
+        if not self.students:
+            print("No students available")
+            return
+
+        for s in self.students:
+            s.show_details()
+            print("Grade:",s.get_grades())
+            print("-" * 30)
+
+    def find_student(self,roll):
+        for s in self.students:
+            if s.Rollno == roll:
+                return s 
+        return None
+
+
+    def update_marks(self,roll,new_marks):
+        student = self.find_student(roll)
+        if student:
+            student.Marks = new_marks
+            print("MARKS UPDATED SUCESSFULLY !!!!")
+        else :
+            print("STUDENT NOT FOUND")
+
+
+    def delete_student(self,roll):
+        self.students = [s for s in self.students if s.Rollno != roll]
+        print("STUDENT DELETED SUCESSFULLY")
+
+
+
+manager = StudentManager()
+
+manager.add_student(Student(1, "Sam", 85))
+manager.add_student(Student(2, "John", 92))
+manager.add_student(Student(3, "Amit", 70))
+
+manager.show_all()
+
+student = manager.find_student(2)
+if student:
+    student.show_details()
+else:
+    print("Student Not Found")
+
+manager.update_marks(1,84)
+
+manager.delete_student(3)
+
+manager.show_all()
+
+
+# menu system:
+
+while True:
+    print("1.Add student:")
+    print("2.find student:")
+    print("3.update marks:")
+    print("4.delete student:")
+    print("5.Show all:")
+    print("6.Exit:")
+
+    choice = input("Enter choice:")
+
+    if choice == "1":
+        roll = int(input("Enter Rollno:"))
+        name = input("Enter Name:")
+        marks = int(input("Enter Marks:"))
+        manager.add_student(Student(roll,name,marks))
+
+    elif choice == "2":
+        roll = int(input("Enter Rollno:"))
+        student = manager.find_student(roll)
+        if student:
+            student.show_details()
+        else:
+            print("Student not found")
+
+    elif choice == "3":
+        roll = int(input("Enter Rollno:"))
+        marks = int(input("Enter new marks:"))
+        manager.update_marks(Student(roll,marks))
+
+    elif choice == "4":
+        roll = int(input("Enter Rollno:"))
+        manager.delete_student(Student(roll))
+
+    elif choice == "5":
+        manager.show_all()
+
+    elif choice == "6":
+        print("goodbye !!!!")
+        break
+
+    else:
+        print("invalid data")
+
+
+
+
+
+
+
+
+
 
 
 
