@@ -270,7 +270,16 @@ while True:
 
 
 
+class student :
+    school_name = "ABC school"    # ✅ Class variable
 
+    def __init__(self,name):
+        self.name = name         # Instance variable
+
+
+s1 = student("sid")
+print(s1.name)
+print(s1.school_name)
 
 
 
