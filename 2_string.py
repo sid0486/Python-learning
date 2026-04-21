@@ -9,13 +9,30 @@ for character in name:
     print(character)
 
 print(name.upper())
+print(name.capitalize())
 print(name.lower())
 print(name.upper())
 print(name.rstrip("!"))
 print(name.replace("Harry","john"))
 print(name.split())
 
+# find is safe — returns -1 if missing. index is strict — crashes if missing.
+# text = "hello world"
 
+# # find vs index
+# text.find("world")    # → 6   (returns -1 if not found)
+# text.index("world")   # → 6   (raises ValueError if not found)
+
+# text.find("xyz")      # → -1  (not found)
+# text.index("xyz")     # ❌ ValueError
+
+# # replace all occurrences
+# "aabbaa".replace("a", "x")      # → "xxbbxx"
+# "aabbaa".replace("a", "x", 1)   # → "xabbaa" (replace only first)
+
+# # check if substring exists
+# "world" in text       # → True
+# "xyz" in text         # → False
 
 blogheading = "introduction to js"
 print(blogheading.capitalize())
@@ -358,6 +375,8 @@ print(company.endswith('Coding'))
 text = '   Coding For All      '
 print(text.strip())
 
+
+
 text = "programming"
 result = []
 for ch in text :
@@ -619,9 +638,9 @@ freq = {}
 for ch in text :
     freq[ch] = freq.get(ch,0)+1
 
-seen = set()
-count = 0
-for ch in text :
-    if freq[ch] > 1 and ch not in seen :
+# seen = set()
+# count = 0
+# for ch in text :
+#     if freq[ch] > 1 and ch not in seen :
         
 

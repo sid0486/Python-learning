@@ -283,8 +283,28 @@ print(s1.school_name)
 
 
 
+class Student:
+    def __init__(self, marks):
+        self._marks = marks    # _ means private
 
+    @property
+    def marks(self):           # getter — read like variable
+        return self._marks
 
+    @marks.setter
+    def marks(self, value):    # setter — validate before setting
+        if value < 0:
+            raise ValueError("Marks cannot be negative")
+        self._marks = value
+
+s = Student(85)
+print(s.marks)    # → 85  (no brackets — looks like variable)
+s.marks = 90      # → calls setter — validates first
+# s.marks = -5      # → raises ValueError
+try:
+    s.marks = -5
+except ValueError as e:
+    print(e)
 
 
 
