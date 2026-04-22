@@ -1,0 +1,33 @@
+{
+  "transactions": [
+    {
+      "tid": 1,
+      "category": "food",
+      "amount": 200,
+      "description": "Lunch",
+      "date": "2026-04-22"
+    },
+    {
+      "tid": 2,
+      "category": "travel",
+      "amount": 500,
+      "description": "Auto",
+      "date": "2026-04-22"
+    },
+    {
+      "tid": 3,
+      "category": "food",
+      "amount": 200,
+      "description": "Lunch",
+      "date": "2026-04-22"
+    },
+    {
+      "tid": 4,
+      "category": "travel",
+      "amount": 500,
+      "description": "Auto",
+      "date": "2026-04-22"
+    }
+  ],
+  "next_id": 5
+}
