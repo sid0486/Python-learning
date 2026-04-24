@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-
+from typing import Optional
 
 
 class Product(BaseModel):
@@ -15,3 +15,10 @@ class Product(BaseModel):
     #     self.description = description
     #     self.price = price
     #     self.quantity = quantity
+
+class Student(BaseModel):
+    id: int
+    name: str
+    std : int
+    address : Optional[str]
+    mobile : str
