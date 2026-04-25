@@ -2,33 +2,31 @@ import json
 from datetime import datetime
 
 class Transaction:
-    def __init__(self,tid,category,amount,description,date=None):
+    def __init__ (self,tid,category,amount,description,date = None):
         self.tid = tid
         self.category = category
-        self.amount = amount
-        self.description = description
+        self.amount = amount 
+        self.description = description 
         self.date = date or datetime.now().strftime("%Y-%m-%d")
-        
-    def __str__(self):
-        return f"[{self.date}] {self.category} | {self.description} | {self.amount}"
 
+    def __str__(self):
+        return f"[{self.date}] | {self.tid} | {self.description} | {self.amount}"
 
     def __repr__(self):
-        return f"Transaction ({self.tid} , {self.category},{self.amount})"
-
+        return f"Transaction : {self.tid}, {self.category} , {self.amount}"
 
     def to_dict(self):
-        return{
-            "tid": self.tid,
-            "category": self.category,
-            "amount": self.amount,
-            "description": self.description,
-            "date": self.date            
+        return {
+            "tid" : self.tid,
+            "category" : self.category,
+            "amount" : self.amount,
+            "description" : self.description,
+            "date" : self.date
         }
 
     @classmethod 
     def from_dict(cls,data):
-        return cls(
+        return cls (
             data["tid"],
             data["category"],
             data["amount"],
@@ -36,35 +34,36 @@ class Transaction:
             data["date"]
         )
 
-
-class Budget:
+class Budget :
     def __init__(self,category,limit):
-        self.category = category 
-        self.limit = limit
-        self.spent = 0
+        self.category = category
+        self.limit = limit 
+        self.spent = 0 
 
     @property
-    def remaining(self):
+    def remaining (self):
         return self.limit - self.spent
 
-    @property
+    @property 
     def is_exceeded(self):
-        return  self.spent > self.limit
+        return self.spent > self.limit
 
     def __str__(self):
-        status = "EXCEEDED" if self.is_exceeded else "OK"
-        return f"{self.category}: {self.spent}/{self.limit} [{status}]" 
+        status = "Exceeded" if self.is_exceeded else "Ok"
+        return f"{self.category}: {self.spent}/{self.limit} [{status}]"
 
 
-class ExpenseManager:
-    def __init__(self, filename="data.json"):
-        self.filename = filename
+
+
+class ExpenseManager :
+    def __init__ (self,filename ="finance.json"):
+        self.filename = filename 
         self.transactions = []
+        self.budgets = {}
         self.categories = set()
-        self._next_id = 1
+        self._next_id = 1 
+        self._load()
 
-        self._load()     
-        self.budgets = {}   
 
     def _load(self):
         try :
@@ -123,7 +122,4 @@ for t in manager.transactions:
     print(t)
 
 print("Food total:", manager.total_by_category("food"))
-
-
-
-
+            
