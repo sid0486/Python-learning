@@ -1,21 +1,22 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException , Depends
 from models import Product, Student
 from database import session, engine
 import database_models
 from app.routers import products, students
+from sqlalchemy.orm import Session
 
 app = FastAPI()
 database_models.Base.metadata.create_all(bind=engine)
 
-app.include_router(products.router, prefix="/products", tags=["Products"])
-app.include_router(students.router, prefix="/students", tags=["Students"])
+# app.include_router(products.router, prefix="/products", tags=["Products"])
+# app.include_router(students.router, prefix="/students", tags=["Students"])
 
 # ---- PRODUCTS ----
 
 products = [
-    Product(id=1, name="PHONE", description="Budget smartphone", price=20000, quantity=5),
-    Product(id=2, name="LAPTOP", description="Mid-range laptop", price=60000, quantity=3),
-    Product(id=3, name="HEADPHONES", description="Wireless headphones", price=3000, quantity=10)
+    Product(id=1,name="PHONE", description="Budget smartphone", price=20000, quantity=5),
+    Product(id=2,name="LAPTOP", description="Mid-range laptop", price=60000, quantity=3),
+    Product(id=3,name="HEADPHONES", description="Wireless headphones", price=3000, quantity=10)
 ]
 
 def init_db():
@@ -28,41 +29,75 @@ def init_db():
 
 init_db()
 
+def get_db():
+    db = session ()
+    try :
+        yield db 
+    finally :
+        db.close()
+
+
 @app.get("/")
 def greet():
     return "Welcome to FastAPI!"
 
 @app.get("/products")
-def get_all_products():
-    return products
+def get_all_products(db:Session = Depends(get_db)):
+    db_products = db.query(database_models.Product).order_by(database_models.Product.id).all()
+
+    return db_products
 
 @app.get("/product")
-def get_product_by_id(id: int):
-    for product in products:
-        if product.id == id:
-            return product
+def get_product_by_id(id: int,db:Session = Depends(get_db)):
+    db_product = db.query(database_models.Product).filter(database_models.Product.id == id ).first()
+    if db_product:
+        return db_product
     raise HTTPException(status_code=404, detail="Product not found")
 
 @app.post("/product")
-def add_product(product: Product):
-    products.append(product)
+def add_product(product: Product,db:Session = Depends(get_db)):
+    db.add(database_models.Product(**product.model_dump()))
+    db.commit()
     return product
 
 @app.put("/product/{id}")
-def update_product(id: int, product: Product):
-    for i in range(len(products)):
-        if products[i].id == id:
-            products[i] = product
-            return product
-    raise HTTPException(status_code=404, detail="Product not found")
+def update_product(id: int, product: Product,db:Session = Depends(get_db)):
+    db_product = db.query(database_models.Product).filter(database_models.Product.id == id ).first()
+    if not db_product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    db_product.name = product.name
+    db_product.description = product.description
+    db_product.price = product.price
+    db_product.quantity = product.quantity
+    db.commit()
+    db.refresh(db_product)
+    return db_product
 
+    # if db_product:
+    #     db_product.name = product.name
+    #     db_product.description = product.description
+    #     db_product.price = product.price
+    #     db_product.quantity = product.quantity
+    #     db.commit()
+    # else:
+    #     raise HTTPException(status_code=404, detail="Product not found")
 @app.delete("/product/{id}")
-def delete_product(id: int):
-    for i in range(len(products)):
-        if products[i].id == id:
-            del products[i]
-            return {"message": "Product deleted"}
-    raise HTTPException(status_code=404, detail="Product not found")
+def delete_product(id: int, db: Session = Depends(get_db)):
+    db_product = db.query(database_models.Product)\
+                   .filter(database_models.Product.id == id).first()
+    if not db_product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    db.delete(db_product)
+    db.commit()
+    return {"message": f"Product {id} deleted"}
+# @app.delete("/product/{id}")
+# def delete_product(id: int):
+#     db_products = db.query(database_models.Product).filter(database_models.Product.id == id ).first()
+#     if db_product :
+#         db.delete(db_product)
+#         db.commit()
+#     else:
+#         raise HTTPException(status_code=404, detail="Product not found")
 
 # ---- STUDENTS ----
 
