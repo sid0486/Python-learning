@@ -7,12 +7,21 @@ class Product(Base):
 
     __tablename__ = "product"
     
-    id = Column(Integer,primary_key = True,index = True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String)
     description = Column(String)
     price = Column(Float) 
     quantity = Column(Integer)
 
+
+class Student(Base):
+    __tablename__ ="student"
+
+    id = Column(Integer,primary_key=True,index=True)
+    name = Column(String)
+    std = Column(Integer)
+    address = Column(String)
+    mobile = Column(String)
 
 
 
