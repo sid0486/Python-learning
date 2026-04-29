@@ -16,8 +16,8 @@ class Product(BaseModel):
     #     self.quantity = quantity
 
 class Student(BaseModel):
-    id: int
+    id: Optional[int] = None   # ✅ make optional
     name: str
-    std : int
-    address : Optional[str]
-    mobile : str
+    std: int
+    address: Optional[str] = None
+    mobile: str

@@ -2,8 +2,8 @@ from fastapi import FastAPI
 import database_models
 from database import engine
 from routers import products, students
-from routers.products import memory_router
-from routers.students import students_memory_router
+# from routers.products import memory_router
+# from routers.students import students_memory_router
 
 # ---- APP SETUP ----
 app = FastAPI()

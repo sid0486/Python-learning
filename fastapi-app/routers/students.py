@@ -22,7 +22,7 @@ def get_student_memory(id:int):
     for student in students_memory:
         if student["id"] == id:
             return student
-    raise HTTPException(status_code-404,detail = "Student not found")
+    raise HTTPException(status_code=404,detail = "Student not found")
 
 
 @students_memory_router.post("/")
@@ -77,27 +77,45 @@ def get_student(id:int , db:Session = Depends(get_db)):
     return db_student
 
 @router.post("/")
-def add_student(student:Student,db:Session = Depends(get_db)):
-    existing = db.query(database_models.Student).filter(database_models.Student.name == name).first()
+def add_student(student: Student, db: Session = Depends(get_db)):
+    existing = db.query(database_models.Student).filter(
+        database_models.Student.name == student.name
+    ).first()
+
     if existing:
-        raise HTTPException(status_code=400 , detail= "Student already exists")
+        raise HTTPException(status_code=400, detail="Student already exists")
+
+    new_student = database_models.Student(
+        name=student.name,
+        std=student.std,
+        address=student.address,
+        mobile=student.mobile
+    )
+
     db.add(new_student)
     db.commit()
     db.refresh(new_student)
+
     return new_student
 
 
 @router.put("/{id}")
-def update_student(id:int , db:Session = Depends(get_db)):
-    db_student = db.query(database_models.Student).filter(database_models.Student.id == id).first()
+def update_student(id: int, student: Student, db: Session = Depends(get_db)):
+    db_student = db.query(database_models.Student).filter(
+        database_models.Student.id == id
+    ).first()
+
     if not db_student:
-        raise HTTPException(status_code=404 , detail = "Student not found")
-    db.student.name= student.name
-    db.student.std= student.std
-    db.student.address= student.address
-    db.student.mobile= student.mobile
+        raise HTTPException(status_code=404, detail="Student not found")
+
+    db_student.name = student.name
+    db_student.std = student.std
+    db_student.address = student.address
+    db_student.mobile = student.mobile
+
     db.commit()
     db.refresh(db_student)
+
     return db_student
 
 
