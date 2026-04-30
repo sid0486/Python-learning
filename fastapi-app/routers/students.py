@@ -100,22 +100,16 @@ def add_student(student: Student, db: Session = Depends(get_db)):
 
 
 @router.put("/{id}")
-def update_student(id: int, student: Student, db: Session = Depends(get_db)):
-    db_student = db.query(database_models.Student).filter(
-        database_models.Student.id == id
-    ).first()
-
+def update_student(id:int ,student:Student, db:Session = Depends(get_db)):
+    db_student = db.query(database_models.Student).filter(database_models.Student.id == id).first()
     if not db_student:
-        raise HTTPException(status_code=404, detail="Student not found")
-
+        raise HTTPException(status_code=404 , detail = "Student not found")
     db_student.name = student.name
     db_student.std = student.std
     db_student.address = student.address
     db_student.mobile = student.mobile
-
     db.commit()
     db.refresh(db_student)
-
     return db_student
 
 

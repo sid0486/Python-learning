@@ -85,62 +85,58 @@ def get_db():
     finally:
         db.close()
 
+@router.get("/")
+def get_all_products(db:Session = Depends(get_db)):
+    return db.query(database_models.Product).order_by(database_models.Product.id).all()
+
+
 @router.get("/{id}")
-def get_product(id: int, db: Session = Depends(get_db)):
-    db_product = db.query(database_models.Product).filter(
-        database_models.Product.id == id
-    ).first()
-
+def get_product(id:int,db:Session = Depends(get_db)):
+db_product = db.query(database_models.Product).filter(
+    database_models.Product.id == id).first()
+    # SELECT * FROM product WHERE id=? LIMIT 1
     if not db_product:
-        raise HTTPException(status_code=404, detail="Product not found")
-
-    return db_product
+        raise HTTPException(status_code=404,detail = "Product not found")
+    return db_product    
 
 
 @router.post("/")
-def add_product(product: Product, db: Session = Depends(get_db)):
+def add_product(product:Product,db:Session= Depends(get_db)):
+    existing = db.query(database_models.Product).filter(database_models.Product.name == product.name).first()
+    if existing:
+        raise HTTPException(status_code=400 ,detail = "Product already exists")
     new_product = database_models.Product(**product.model_dump())
-
     db.add(new_product)
     db.commit()
     db.refresh(new_product)
-
     return new_product
 
 
 @router.put("/{id}")
-def update_product(id: int, product: Product, db: Session = Depends(get_db)):
-    db_product = db.query(database_models.Product).filter(
-        database_models.Product.id == id
-    ).first()
+def update_product(id:int, product:Product,db:Session = Depends(get_db)):
+    db_product = db.query(database_models.Product).filter(database_models.Product.id == id).first()
 
     if not db_product:
-        raise HTTPException(status_code=404, detail="Product not found")
-
+        raise HTTPException(status_code=404 , detail ="Product not found")
     db_product.name = product.name
     db_product.description = product.description
     db_product.price = product.price
     db_product.quantity = product.quantity
-
     db.commit()
     db.refresh(db_product)
-
     return db_product
 
-
 @router.delete("/{id}")
-def delete_product(id: int, db: Session = Depends(get_db)):
-    db_product = db.query(database_models.Product).filter(
-        database_models.Product.id == id
-    ).first()
+def delete_product(id:int,db:Session = Depends(get_db)):
+    db_product = db.query(database_models.Product).filter(database_models.Product.id == id).first()
 
     if not db_product:
-        raise HTTPException(status_code=404, detail="Product not found")
-
+        raise HTTPException (status_code=404,detail = "Product not found")
     db.delete(db_product)
     db.commit()
-
     return {"message": f"Product {id} deleted"}
+
+
 
 
 

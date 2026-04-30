@@ -4,8 +4,7 @@ from main import app
 client = TestClient(app)
 
 def test_get_products():
-    response = client.get("/products")
-    
+    response = client.get("/products/")
     assert response.status_code == 200
     assert isinstance(response.json(), list)
 
@@ -16,29 +15,13 @@ def test_add_product():
         "price": 15000,
         "quantity": 2
     }
-
-    response = client.post("/products", json=data)
-
+    response = client.post("/products/", json=data)
     assert response.status_code == 200
 
-
 def test_get_product():
-    response = client.get("/product/1")
-
+    response = client.get("/products/1")
     assert response.status_code in [200, 404]
 
 def test_delete_product():
-    response = client.delete("/product/1")
-
+    response = client.delete("/products/1")
     assert response.status_code in [200, 404]
-
-
-
-
-
-
-
-
-
-
-
