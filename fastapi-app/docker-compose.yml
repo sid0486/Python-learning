@@ -1,7 +1,4 @@
-version: '3.8'
-
 services:
-
   app:
     build: .
     container_name: fastapi-app
@@ -12,12 +9,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    # development only — remove for production
     volumes:
       - .:/app
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
   db:
-    image: postgres:latest
+    image: postgres:15
     container_name: postgres-dev
     env_file:
       - .env

@@ -5,7 +5,7 @@ from fastapi import APIRouter , HTTPException ,Depends
 from sqlalchemy.orm import Session
 import database_models
 from database import session
-from models import Product
+from schemas import ProductCreate,ProductResponse
 
 
 # in-memory list for practice
@@ -34,7 +34,7 @@ def get_product_memory(id:int):
 
 
 @memory_router.post("/")
-def add_product_memory(product:Product):
+def add_product_memory(product:ProductCreate):
     global product_counter 
     for p in products_memory:
         if p["name"].lower() == product.name.lower():
@@ -50,7 +50,7 @@ def add_product_memory(product:Product):
 
 
 @memory_router.put("/{id}")
-def update_product_memory(id:int,product : Product):
+def update_product_memory(id:int,product : ProductCreate):
     for i in range(len(products_memory)):
         # range(len()) gives index
         # need index to modify list item
@@ -85,14 +85,14 @@ def get_db():
     finally:
         db.close()
 
-@router.get("/")
+@router.get("/",response_model=list[ProductResponse])
 def get_all_products(db:Session = Depends(get_db)):
     return db.query(database_models.Product).order_by(database_models.Product.id).all()
 
 
-@router.get("/{id}")
+@router.get("/{id}",response_model=ProductResponse)
 def get_product(id:int,db:Session = Depends(get_db)):
-db_product = db.query(database_models.Product).filter(
+    db_product = db.query(database_models.Product).filter(
     database_models.Product.id == id).first()
     # SELECT * FROM product WHERE id=? LIMIT 1
     if not db_product:
@@ -100,8 +100,8 @@ db_product = db.query(database_models.Product).filter(
     return db_product    
 
 
-@router.post("/")
-def add_product(product:Product,db:Session= Depends(get_db)):
+@router.post("/",response_model=ProductResponse)
+def add_product(product:ProductCreate,db:Session= Depends(get_db)):
     existing = db.query(database_models.Product).filter(database_models.Product.name == product.name).first()
     if existing:
         raise HTTPException(status_code=400 ,detail = "Product already exists")
@@ -112,8 +112,8 @@ def add_product(product:Product,db:Session= Depends(get_db)):
     return new_product
 
 
-@router.put("/{id}")
-def update_product(id:int, product:Product,db:Session = Depends(get_db)):
+@router.put("/{id}",response_model=ProductResponse)
+def update_product(id:int, product:ProductCreate,db:Session = Depends(get_db)):
     db_product = db.query(database_models.Product).filter(database_models.Product.id == id).first()
 
     if not db_product:

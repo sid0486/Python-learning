@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException ,Depends
 from sqlalchemy.orm import Session
 import database_models
 from database import session
-from models import Student
+from schemas import StudentCreate,StudentResponse
 
 students_memory = [
     {"id": 1, "name": "Siddhi", "std": 10, "address": "Laxmi Nagar", "mobile": "9313429179"},
@@ -26,7 +26,7 @@ def get_student_memory(id:int):
 
 
 @students_memory_router.post("/")
-def add_student_memory(student : Student):
+def add_student_memory(student : StudentCreate):
     global student_counter
     for s in students_memory:
         if s["name"].lower() == student.name.lower():
@@ -38,7 +38,7 @@ def add_student_memory(student : Student):
 
 
 @students_memory_router.put("/{id}")
-def update_student_memory(id:int,student:Student):
+def update_student_memory(id:int,student:StudentResponse):
     for i in range(len(students_memory)):
         if students_memory[i]["id"] == id :
             students_memory[i].update(student.model_dump())
@@ -65,19 +65,19 @@ def get_db():
         db.close()
 
 
-@router.get("/")
+@router.get("/",response_model=list[StudentResponse])
 def get_all_students(db:Session=Depends(get_db)):
     return db.query(database_models.Student).order_by(database_models.Student.id).all()
 
-@router.get("/{id}")
+@router.get("/{id}",response_model=StudentResponse)
 def get_student(id:int , db:Session = Depends(get_db)):
     db_student = db.query(database_models.Student).filter(database_models.Student.id == id).first()
     if not db_student:
         raise HTTPException(status_code=404 , detail = "Student not found")
     return db_student
 
-@router.post("/")
-def add_student(student: Student, db: Session = Depends(get_db)):
+@router.post("/",response_model=StudentResponse)
+def add_student(student: StudentCreate, db: Session = Depends(get_db)):
     existing = db.query(database_models.Student).filter(
         database_models.Student.name == student.name
     ).first()
@@ -85,12 +85,7 @@ def add_student(student: Student, db: Session = Depends(get_db)):
     if existing:
         raise HTTPException(status_code=400, detail="Student already exists")
 
-    new_student = database_models.Student(
-        name=student.name,
-        std=student.std,
-        address=student.address,
-        mobile=student.mobile
-    )
+    new_student = database_models.Student(**student.model_dump())
 
     db.add(new_student)
     db.commit()
@@ -99,8 +94,8 @@ def add_student(student: Student, db: Session = Depends(get_db)):
     return new_student
 
 
-@router.put("/{id}")
-def update_student(id:int ,student:Student, db:Session = Depends(get_db)):
+@router.put("/{id}",response_model=StudentCreate)
+def update_student(id:int ,student:StudentCreate, db:Session = Depends(get_db)):
     db_student = db.query(database_models.Student).filter(database_models.Student.id == id).first()
     if not db_student:
         raise HTTPException(status_code=404 , detail = "Student not found")
