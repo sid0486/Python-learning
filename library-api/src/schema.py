@@ -21,7 +21,7 @@ class BookResponse(Basemodel):
     available_copies : int 
 
 
-class MemberBook(Basemodel):
+class MemberCreate(Basemodel):
     name : str
     email : EmailStr
     phone : str = Field(min_length = 10 ,max_length = 10)
