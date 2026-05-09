@@ -1,8 +1,8 @@
-from pydantic import Basemodel,ConfigDict,EmailStr,Field
+from pydantic import BaseModel,ConfigDict,EmailStr,Field
 from datetime import date 
 from typing import Optional , Literal
 
-class BookCreate(Basemodel):
+class BookCreate(BaseModel):
     title : str 
     author : str 
     genre : str 
@@ -10,7 +10,7 @@ class BookCreate(Basemodel):
     available_copies : int 
 
 
-class BookResponse(Basemodel):
+class BookResponse(BaseModel):
     model_config = ConfigDict(from_attributes = True)
     
     id : int
@@ -21,14 +21,14 @@ class BookResponse(Basemodel):
     available_copies : int 
 
 
-class MemberCreate(Basemodel):
+class MemberCreate(BaseModel):
     name : str
     email : EmailStr
     phone : str = Field(min_length = 10 ,max_length = 10)
     membership_type : Literal["basic","premium"] = "basic"
 
 
-class MemberResponse(Basemodel):
+class MemberResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     
     id: int
@@ -38,12 +38,12 @@ class MemberResponse(Basemodel):
     membership_type : str
 
 
-class BorrowCreate(Basemodel):
+class BorrowCreate(BaseModel):
     book_id : int
-    member_id = int
+    member_id : int
     
 
-class BorrowResponse(Basemodel):
+class BorrowResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int 
